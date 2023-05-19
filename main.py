@@ -55,7 +55,7 @@ class DataHandler:
         self.data = args
 
 
-class DataSeparator(DataHandler):
+class DataSeparatorFromInsert(DataHandler):
 
     def data_separator(self):
         try:
@@ -72,5 +72,5 @@ class DataSeparator(DataHandler):
 
 
 users = Users()
-sep = DataSeparator(OriginData.original_data())
+sep = DataSeparatorFromInsert(OriginData.original_data())
 
