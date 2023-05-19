@@ -71,7 +71,6 @@ class DataSeparator(DataHandler):
             session.close()
 
 
-
 users = Users()
 sep = DataSeparator(OriginData.original_data())
 
