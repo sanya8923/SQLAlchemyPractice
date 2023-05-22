@@ -87,11 +87,24 @@ def insert_to_table_contacts():
     conn.commit()
 
 
+def search_contact_by_phone(phone_for_search: str):
+    stmt_sel_phone = select(table_contacts.c.user_id).where(table_contacts.c.phone == f'{phone_for_search}')
+    # stmt_sel_f_name = select(table_users1.c.first_name).where(table_users1.c.user_id == stmt_sel_phone)
+
+    with engine.connect() as conn:
+        result = conn.execute(stmt_sel_phone)
+
+        for row in result:
+            print(row)
+
+
 insert_to_table_data1(data)
 
 insert_to_table_users1()
 # print_data(table_users1)
 
 insert_to_table_contacts()
-print_data(table_contacts)
+# print_data(table_contacts)
+
+search_contact_by_phone('89634387619')
 
