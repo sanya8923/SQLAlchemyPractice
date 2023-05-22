@@ -13,16 +13,56 @@ table_data1 = Table('table_data1',
 
 table_users1 = Table('table_users1',
                      metadata,
-                     Column('user_id', Integer, ForeignKey('table_contacts.user_id'), nullable=False),
-                     Column('id', Integer, primary_key=True),
+                     Column('user_id', Integer, primary_key=True),
                      Column('first_name', String(255)),
-                     Column('last_name', String(255))
+                     Column('last_name', String(255)),
                      )
 
 table_contacts = Table('table_contacts',
                        metadata,
                        Column('user_id', Integer, primary_key=True),
-                       Column('phone', String(255))
+                       Column('phone', String(255)),
+                       ForeignKeyConstraint(['user_id'], ['table_users1.user_id'])
                        )
 
 metadata.create_all(engine)
+
+
+def print_users_data_via_join_from1():
+    stmt = select(table_users1.c.first_name, table_contacts.c.phone).join_from(table_users1, table_contacts)
+
+    gen_result = ''
+
+    with engine.connect() as conn:
+        result_proxy = conn.execute(stmt)
+        result = result_proxy.fetchall()
+
+    for row in result:
+        for item in row:
+            gen_result = gen_result + ' ' + item
+
+    conn.commit()
+
+    print(gen_result.strip())
+
+
+def print_users_data_via_join1():
+    stmt = select(table_users1.c.last_name, table_contacts.c.phone).join(table_users1)
+
+    gen_result = ''
+
+    with engine.connect() as conn:
+        result_proxy = conn.execute(stmt)
+        result = result_proxy.fetchall()
+
+        conn.commit()
+
+    for row in result:
+        for item in row:
+            gen_result = gen_result + ' ' + item
+
+    print(gen_result.strip())
+
+
+# print_users_data_via_join_from1()
+print_users_data_via_join1()

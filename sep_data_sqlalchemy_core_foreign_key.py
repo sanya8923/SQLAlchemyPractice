@@ -65,4 +65,4 @@ def print_users_data_via_join():
 
 
 # print_users_data_via_join_from()
-print_users_data_via_join()
+# print_users_data_via_join()
