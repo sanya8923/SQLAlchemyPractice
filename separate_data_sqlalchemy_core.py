@@ -86,15 +86,15 @@ def insert_to_table_contacts():
     conn.commit()
 
 
-def search_contact_by_phone_via_where(phone_for_search: str):
-    stmt_sel_phone = select(table_contacts.c.user_id) \
+def search_full_name_by_phone_via_where(phone_for_search: str):
+    stmt_sel_user_id = select(table_contacts.c.user_id) \
         .where(table_contacts.c.phone == f'{phone_for_search}') \
         .scalar_subquery()
-    stmt_sel_f_name = select(table_users1.c.first_name, table_users1.c.last_name) \
-        .where(table_users1.c.user_id == stmt_sel_phone)
+    stmt_sel_full_name = select(table_users1.c.first_name, table_users1.c.last_name) \
+        .where(table_users1.c.user_id == stmt_sel_user_id)
 
     with engine.connect() as conn:
-        result = conn.execute(stmt_sel_f_name)
+        result = conn.execute(stmt_sel_full_name)
         gen_result = ''
 
         for row in result:
@@ -104,8 +104,11 @@ def search_contact_by_phone_via_where(phone_for_search: str):
         print(gen_result.strip())
 
 
-def print_user_info_by_name(name_for_search: str):
-    stmt = select(table_users1.c.last_name).filter_by(first_name=f'{name_for_search}')
+def search_contact_by_phone_via_where(phone_for_search: str):
+    stmt_sel_user_id = select(table_users1.c.user_id)\
+        .filter_by(first_name=f'{phone_for_search}')\
+        .scalar_subquery()
+    stmt_sel_f_name = select()
 
     with engine.connect() as conn:
         result = conn.execute(stmt)
