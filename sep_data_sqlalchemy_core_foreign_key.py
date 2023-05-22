@@ -47,7 +47,22 @@ def print_users_data_via_join_from():
 
 
 def print_users_data_via_join():
-    stmt = select()
+    stmt = select(table_users1.c.last_name, table_contacts.c.phone).join(table_users1)
+
+    gen_result = ''
+
+    with engine.connect() as conn:
+        result_proxy = conn.execute(stmt)
+        result = result_proxy.fetchall()
+
+        conn.commit()
+
+    for row in result:
+        for item in row:
+            gen_result = gen_result + ' ' + item
+
+    print(gen_result.strip())
 
 
-print_users_data_via_join_from()
+# print_users_data_via_join_from()
+print_users_data_via_join()
