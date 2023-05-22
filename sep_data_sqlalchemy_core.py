@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, insert, select, delete
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, insert, select, delete, ForeignKey
 
 engine = create_engine('sqlite:///your_database.db')
 metadata = MetaData()
@@ -154,6 +154,17 @@ def search_full_name_by_phone_via_filter(phone_for_search: str):
     print(gen_result.strip())
 
 
+# def search_full_name_by_phone_via_join_from():
+#     stmt = select(table_users1.c.first_name, table_contacts.c.phone).join_from(table_users1, table_contacts)
+#
+#     with engine.connect() as conn:
+#         result = conn.execute(stmt)
+#
+#     conn.execute()
+#
+#     print(result)
+
+
 insert_to_table_data1(data)
 
 insert_to_table_users1()
@@ -165,4 +176,4 @@ insert_to_table_contacts()
 phone = '89634387619'
 # search_full_name_by_phone_via_where(phone)
 # search_full_name_by_phone_via_filter_by(phone)
-search_full_name_by_phone_via_filter(phone)
+# search_full_name_by_phone_via_filter(phone)
