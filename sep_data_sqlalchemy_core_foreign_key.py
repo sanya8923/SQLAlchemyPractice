@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, insert, select, delete, ForeignKey
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, select, ForeignKey
 
 engine = create_engine('sqlite:///your_database.db')
 metadata = MetaData()
