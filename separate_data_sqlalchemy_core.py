@@ -88,11 +88,13 @@ def insert_to_table_contacts():
 
 
 def search_contact_by_phone(phone_for_search: str):
-    stmt_sel_phone = select(table_contacts.c.user_id).where(table_contacts.c.phone == f'{phone_for_search}')
-    # stmt_sel_f_name = select(table_users1.c.first_name).where(table_users1.c.user_id == stmt_sel_phone)
+    stmt_sel_phone = select(table_contacts.c.user_id)\
+                            .where(table_contacts.c.phone == f'{phone_for_search}')\
+                            .scalar_subquery()
+    stmt_sel_f_name = select(table_users1.c.first_name).where(table_users1.c.user_id == stmt_sel_phone)
 
     with engine.connect() as conn:
-        result = conn.execute(stmt_sel_phone)
+        result = conn.execute(stmt_sel_f_name)
 
         for row in result:
             print(row)
