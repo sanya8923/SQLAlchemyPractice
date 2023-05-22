@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, select, ForeignKey
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, select, ForeignKey, func
 
 engine = create_engine('sqlite:///your_database.db')
 metadata = MetaData()
@@ -82,6 +82,25 @@ def print_users_data_via_join_and_select_from():
     print(gen_result.strip())
 
 
+def count_row():
+    stmt = select(func.count('*')).select_from(table_users1)
+
+    gen_result = ''
+
+    with engine.connect() as conn:
+        result_proxy = conn.execute(stmt)
+        result = result_proxy.fetchall()
+
+        conn.commit()
+
+    for row in result:
+        for item in row:
+            gen_result = item
+
+    print('Number rows ' + str(gen_result))
+
+
 # print_users_data_via_join_from()
 # print_users_data_via_join()
-print_users_data_via_join_and_select_from()
+# print_users_data_via_join_and_select_from()
+count_row()
