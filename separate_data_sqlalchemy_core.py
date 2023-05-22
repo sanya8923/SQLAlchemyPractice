@@ -90,37 +90,66 @@ def search_full_name_by_phone_via_where(phone_for_search: str):
     stmt_sel_user_id = select(table_contacts.c.user_id) \
         .where(table_contacts.c.phone == f'{phone_for_search}') \
         .scalar_subquery()
+
     stmt_sel_full_name = select(table_users1.c.first_name, table_users1.c.last_name) \
         .where(table_users1.c.user_id == stmt_sel_user_id)
 
+    gen_result = ''
+
     with engine.connect() as conn:
         result = conn.execute(stmt_sel_full_name)
-
-        gen_result = ''
 
         for row in result:
             for item in row:
                 gen_result = gen_result + ' ' + item
 
-        print(gen_result.strip())
+        conn.commit()
+
+    print(gen_result.strip())
 
 
 def search_full_name_by_phone_via_filter_by(phone_for_search: str):
     stmt_sel_user_id = select(table_contacts.c.user_id)\
         .filter_by(phone=f'{phone_for_search}')\
         .scalar_subquery()
-    stmt_sel_f_name = select(table_users1.c.first_name, table_users1.c.last_name)\
-        .where(table_users1.c.user_id == stmt_sel_user_id)
 
-    with engine.connect() as conn:
-        result_proxy = conn.execute(stmt_sel_f_name)
-        result = result_proxy.fetchall()
+    stmt_sel_name = select(table_users1.c.first_name, table_users1.c.last_name)\
+        .where(table_users1.c.user_id == stmt_sel_user_id)
 
     gen_result = ''
 
-    for row in result:
-        for item in row:
-            gen_result = gen_result + ' ' + item
+    with engine.connect() as conn:
+        result_proxy = conn.execute(stmt_sel_name)
+        result = result_proxy.fetchall()
+
+        for row in result:
+            for item in row:
+                gen_result = gen_result + ' ' + item
+
+    conn.commit()
+
+    print(gen_result.strip())
+
+
+def search_full_name_by_phone_via_filter(phone_for_search: str):
+    stmt_sel_user_id = select(table_contacts.c.user_id)\
+        .filter(table_contacts.c.phone == phone_for_search)\
+        .scalar_subquery()
+
+    stmt_sel_name = select(table_users1.c.first_name, table_users1.c.last_name)\
+        .where(table_users1.c.user_id == stmt_sel_user_id)
+
+    gen_result = ''
+
+    with engine.connect() as conn:
+        result_proxy = conn.execute(stmt_sel_name)
+        result = result_proxy.fetchall()
+
+        for row in result:
+            for item in row:
+                gen_result = gen_result + ' ' + item
+
+    conn.commit()
 
     print(gen_result.strip())
 
@@ -133,5 +162,7 @@ insert_to_table_users1()
 insert_to_table_contacts()
 # print_data(table_contacts)
 
-# search_full_name_by_phone_via_where('89634387619')
-search_full_name_by_phone_via_filter_by('89634387619')
+phone = '89634387619'
+# search_full_name_by_phone_via_where(phone)
+# search_full_name_by_phone_via_filter_by(phone)
+search_full_name_by_phone_via_filter(phone)
