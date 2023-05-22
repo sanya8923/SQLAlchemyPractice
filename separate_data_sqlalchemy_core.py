@@ -5,20 +5,20 @@ engine = create_engine('sqlite:///your_database.db')
 metadata = MetaData()
 
 table_data1 = Table('table_data1',
-                   metadata,
-                   Column('user_id', Integer, primary_key=True),
-                   Column('first_name', String(255)),
-                   Column('last_name', String(255)),
-                   Column('phone', String(255))
-                   )
+                    metadata,
+                    Column('user_id', Integer, primary_key=True),
+                    Column('first_name', String(255)),
+                    Column('last_name', String(255)),
+                    Column('phone', String(255))
+                    )
 
 table_users1 = Table('table_users1',
-                    metadata,
-                    Column('user_id', Integer),
-                    Column('id', Integer, primary_key=True),
-                    Column('first_name', String(255)),
-                    Column('last_name', String(255))
-                    )
+                     metadata,
+                     Column('user_id', Integer),
+                     Column('id', Integer, primary_key=True),
+                     Column('first_name', String(255)),
+                     Column('last_name', String(255))
+                     )
 
 table_contacts = Table('table_contacts',
                        metadata,
@@ -91,13 +91,17 @@ def search_contact_by_phone(phone_for_search: str):
     stmt_sel_phone = select(table_contacts.c.user_id)\
                             .where(table_contacts.c.phone == f'{phone_for_search}')\
                             .scalar_subquery()
-    stmt_sel_f_name = select(table_users1.c.first_name).where(table_users1.c.user_id == stmt_sel_phone)
+    stmt_sel_f_name = select(table_users1.c.first_name, table_users1.c.last_name).where(table_users1.c.user_id == stmt_sel_phone)
 
     with engine.connect() as conn:
         result = conn.execute(stmt_sel_f_name)
+        gen_result = ''
 
         for row in result:
-            print(row)
+            for item in row:
+                gen_result = gen_result + ' ' + item
+
+        print(gen_result.strip())
 
 
 insert_to_table_data1(data)
@@ -109,4 +113,3 @@ insert_to_table_contacts()
 # print_data(table_contacts)
 
 search_contact_by_phone('89634387619')
-
